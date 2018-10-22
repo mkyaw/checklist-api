@@ -12,7 +12,7 @@ RSpec.describe 'Checklists API', type: :request do
 
     it 'returns checklists' do
       # Note `json` is a custom helper to parse JSON responses
-      expect(json).not_to_be_empty
+      expect(json).not_to be_empty
       expect(json.size).to eq(10)
     end
 
@@ -28,7 +28,7 @@ RSpec.describe 'Checklists API', type: :request do
 
     context 'when the record exists' do
       it 'returns the checklist' do
-        expect(json).not_to_be_empty
+        expect(json).not_to be_empty
         expect(json['id']).to eq(checklist_id)
       end
 
@@ -69,7 +69,7 @@ RSpec.describe 'Checklists API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post 'checklists', param: { title: 'Bad bad title' } }
+      before { post '/checklists', params: { title: 'Bad bad title' } }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -102,7 +102,7 @@ RSpec.describe 'Checklists API', type: :request do
 
   # Test suite for DELETE /checklists/:id
   describe 'DELETE /checklists/:id' do
-    before { delete "checklists/#{checklist_id}" }
+    before { delete "/checklists/#{checklist_id}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
