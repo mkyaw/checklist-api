@@ -59,7 +59,7 @@ RSpec.describe 'Checklists API', type: :request do
       # make HTTP POST reqeust before each test case
       before { post '/checklists', params: valid_attributes }
 
-      it 'creates a todo' do
+      it 'creates a checklist' do
         expect(json['title']).to eq('Learn Redux')
       end
 
