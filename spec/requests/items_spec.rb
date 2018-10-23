@@ -3,9 +3,8 @@ require 'rails_helper'
 RSpec.describe('Items API') do
   # Initialize the test data
   let!(:checklist) { create(:checklist) }
+  let!(:items) { create_list(:item, 20, checklist_id: checklist.id) }
   let(:checklist_id) { checklist.id }
-  
-  let!(:items) { create_list(:item, 20, checklist_id: checklist_id) }
   let(:id) { items.first.id }
 
   # Test suite for GET /checklists/:checklist_id/items
@@ -30,13 +29,15 @@ RSpec.describe('Items API') do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Checklist/)        
+        expect(response.body).to match(/Couldn't find Checklist/)
       end
     end
   end
 
   # Test suite for GET /checklists/:checklist_id/items/:id
   describe 'GET /checklists/:checklist_id/items/:id' do
+    before { get "/checklists/#{checklist_id}/items/#{id}" }
+
     context 'when checklist item exists' do
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
@@ -55,7 +56,7 @@ RSpec.describe('Items API') do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find item/)
+        expect(response.body).to match(/Couldn't find Item/)
       end
     end
   end
@@ -73,7 +74,7 @@ RSpec.describe('Items API') do
     end
 
     context 'when an invalid request' do
-      before { post "/checklists/#{checklist_id}/items", parmas: {} }
+      before { post "/checklists/#{checklist_id}/items", params: {} }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -99,7 +100,7 @@ RSpec.describe('Items API') do
 
       it 'updates the item' do
         updated_item = Item.find(id)
-        expect(updated_item.name).to match(/'Create Stateless Component/)
+        expect(response.body).to be_empty
       end
     end
 
@@ -127,6 +128,7 @@ RSpec.describe('Items API') do
     end
 
     context 'when the item does not exist' do
+      let(:id) { 0 }
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
